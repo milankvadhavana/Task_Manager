@@ -1,0 +1,11 @@
+<<<<<<< HEAD
+flask
+mysql-connector-python
+python-dotenv
+gunicorn
+=======
+flask==2.0.3
+pyodbc==5.2.0
+python-dotenv==0.19.2
+gunicorn==20.1.0
+>>>>>>> 592a7961562bc6cb4cd52ed252f8a401dabc13b1
