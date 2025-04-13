@@ -24,22 +24,40 @@ app = Flask(__name__)
 #         raise
 
 def get_db_connection():
-    return mysql.connector.connect(
-        host=os.getenv('DB_HOST'),
-        port=os.getenv('DB_PORT'),
-        user=os.getenv('DB_USER'),
-        password=os.getenv('DB_PASSWORD'),
-        database=os.getenv('DB_DATABASE'),
-        ssl_ca=os.getenv('SSL_CA'),
-        ssl_disabled=False  # Enable SSL
-    )
+    try:
+        conn = mysql.connector.connect(
+            host=os.getenv('DB_HOST'),
+            port=int(os.getenv('DB_PORT')),
+            user=os.getenv('DB_USER'),
+            password=os.getenv('DB_PASSWORD'),
+            database=os.getenv('DB_DATABASE'),
+            ssl_ca=os.getenv('SSL_CA'),
+            ssl_disabled=False
+        )
+        return conn
+    except mysql.connector.Error as e:
+        print(f"Database connection failed: {e}")
+        raise
+
+
+
+# def get_db_connection():
+#     return mysql.connector.connect(
+#         host=os.getenv('DB_HOST'),
+#         port=os.getenv('DB_PORT'),
+#         user=os.getenv('DB_USER'),
+#         password=os.getenv('DB_PASSWORD'),
+#         database=os.getenv('DB_DATABASE'),
+#         ssl_ca=os.getenv('SSL_CA'),
+#         ssl_disabled=False  # Enable SSL
+#     )
 
 @app.route('/')
 def index():
     """Display all tasks"""
     try:
         conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)  # Get results as dictionaries
+        cursor = conn.cursor(dictionary=True)  
         cursor.execute("SELECT * FROM tasks ORDER BY due_date")
         tasks = cursor.fetchall()
         cursor.close()
